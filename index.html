@@ -27,8 +27,8 @@
                 <p class="text-slate-400 mt-1 text-xs md:text-sm">Resmi tatiller, yarım gün izinler ve iş günü projeksiyonu yönetim paneli</p>
             </div>
             <div class="flex items-center gap-3">
-                <!-- PWA İndir Butonu (Başlangıçta gizli olabilir, tarayıcı destekleyince aktifleşir) -->
-                <button id="installBtn" onclick="installPWA()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                <!-- Her Zaman Görünür PWA İndir Butonu -->
+                <button onclick="handleInstallClick()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                     <span>📱 Uygulamayı İndir</span>
                 </button>
                 <div class="text-xs text-slate-400 bg-slate-800/80 px-3 py-2 rounded-md border border-slate-700">
@@ -225,28 +225,30 @@
             document.getElementById('startDate').addEventListener('change', calculate);
             document.getElementById('endDate').addEventListener('change', calculate);
 
-            // PWA Servis Kaydı
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(err => console.log('SW kayıt hatası:', err));
             }
         };
 
-        // PWA Kurulum Butonu Dinleyicisi
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('installBtn').classList.remove('hidden');
         });
 
-        function installPWA() {
+        function handleInstallClick() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        document.getElementById('installBtn').classList.add('hidden');
-                    }
                     deferredPrompt = null;
                 });
+            } else {
+                // Eğer tarayıcı otomatik tetiklemediyse cihaz türüne göre rehberlik göster
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    alert("Bu uygulamayı iPhone/iPad ana ekranınıza eklemek için:\n\n1. Safari'nin altındaki 'Paylaş' (kare ve yukarı ok) butonuna basın.\n2. Açılan menüden 'Ana Ekrana Ekle' seçeneğine dokunun.");
+                } else {
+                    alert("Uygulamayı yüklemek için tarayıcınızın sağ üst köşesindeki menüye (üç nokta) tıklayıp 'Uygulamayı Yükle' veya 'Ana Ekrana Ekle' seçeneğini seçebilirsiniz.");
+                }
             }
         }
 
