@@ -3,136 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gelişmiş İş Günü ve Tatil Hesaplayıcı</title>
+    <title>Kurumsal İş Günü ve İzin Yönetim Paneli</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .holiday-cell { background-color: #fee2e2; border-color: #f87171; color: #991b1b; }
-        .custom-holiday-cell { background-color: #fef3c7; border-color: #f59e0b; color: #92400e; }
-        .weekend-cell { background-color: #f3f4f6; color: #9ca3af; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .holiday-cell { background-color: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+        .half-holiday-cell { background-color: #fff7ed; border-color: #fdba74; color: #9a3412; }
+        .custom-holiday-cell { background-color: #fefce8; border-color: #fde047; color: #854d0e; }
+        .weekend-cell { background-color: #f8fafc; color: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between antialiased">
 
     <!-- Header -->
-    <header class="bg-indigo-600 text-white shadow-md py-6 px-4 text-center">
-        <h1 class="text-3xl font-bold tracking-tight">📅 Gelişmiş İş Günü ve Tatil Hesaplayıcı</h1>
-        <p class="text-indigo-100 mt-2 text-sm md:text-base">Tarih aralığı analizi yapın, özel tatiller tanımlayın veya tarihe gün ekleyerek hedef tarihi hesaplayın.</p>
+    <header class="bg-slate-900 text-white border-b border-slate-800 py-6 px-6 shadow-sm">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-100">İş Günü ve İzin Analiz Platformu</h1>
+                <p class="text-slate-400 mt-1 text-xs md:text-sm">Resmi tatiller, yarım gün izinler ve iş günü projeksiyonu yönetim paneli</p>
+            </div>
+            <div class="text-xs text-slate-400 bg-slate-800/80 px-3 py-1.5 rounded-md border border-slate-700">
+                Mevzuat Uyumlu Hesaplama
+            </div>
+        </div>
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-4xl w-full mx-auto p-4 md:p-6 flex-grow">
+    <main class="max-w-5xl w-full mx-auto p-4 md:p-8 flex-grow">
         
         <!-- Tab Menü -->
-        <div class="flex border-b border-slate-200 mb-6 overflow-x-auto">
-            <button onclick="switchTab('range')" id="tab-range" class="py-3 px-6 font-semibold border-b-2 border-indigo-600 text-indigo-600 focus:outline-none transition whitespace-nowrap">📊 Tarih Aralığı & Tatil Analizi</button>
-            <button onclick="switchTab('add')" id="tab-add" class="py-3 px-6 font-semibold text-slate-500 border-b-2 border-transparent hover:text-indigo-600 focus:outline-none transition whitespace-nowrap">➕ Tarihe Gün Ekle (Hedef Bul)</button>
+        <div class="flex border-b border-slate-300 mb-8 bg-white rounded-t-lg px-2 pt-2 shadow-sm">
+            <button onclick="switchTab('range')" id="tab-range" class="py-3 px-6 font-medium text-sm border-b-2 border-slate-900 text-slate-900 focus:outline-none transition whitespace-nowrap">Tarih Aralığı Analizi</button>
+            <button onclick="switchTab('add')" id="tab-add" class="py-3 px-6 font-medium text-sm text-slate-500 border-b-2 border-transparent hover:text-slate-900 focus:outline-none transition whitespace-nowrap">Hedef Tarih Projeksiyonu</button>
         </div>
 
         <!-- BÖLÜM 1: Tarih Aralığı Hesaplama -->
         <div id="section-range" class="space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Başlangıç Tarihi (Hariç)</label>
-                    <input type="date" id="startDate" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Başlangıç Tarihi</label>
+                        <input type="date" id="startDate" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none text-sm text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Bitiş Tarihi</label>
+                        <input type="date" id="endDate" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none text-sm text-slate-700">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Bitiş Tarihi (Dahil)</label>
-                    <input type="date" id="endDate" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+
+                <!-- Bilgilendirme Notu -->
+                <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 flex items-center gap-2">
+                    <span class="font-bold text-slate-700">Not:</span>
+                    <span>Hesaplama kuralı gereğince <strong>başlangıç tarihi hesaba dahil edilmez</strong>, <strong>bitiş tarihi hesaba dahil edilir</strong>. (Aralık: <code class="bg-slate-200 px-1 py-0.5 rounded text-slate-800">(Başlangıç, Bitiş]</code>)</span>
                 </div>
-                <div class="md:col-span-2 flex flex-wrap gap-2 pt-2">
-                    <button onclick="setQuickRange('thisMonth')" class="text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-1.5 rounded-lg transition font-medium">Bu Ay</button>
-                    <button onclick="setQuickRange('thisYear')" class="text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-1.5 rounded-lg transition font-medium">Bu Yıl</button>
-                    <button onclick="setQuickRange('last30')" class="text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-1.5 rounded-lg transition font-medium">Son 30 Gün</button>
+
+                <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100 mt-4">
+                    <span class="text-xs text-slate-400 self-center mr-2 font-medium">Hızlı Seçim:</span>
+                    <button onclick="setQuickRange('thisMonth')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded transition font-medium">Cari Ay</button>
+                    <button onclick="setQuickRange('thisYear')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded transition font-medium">Cari Yıl</button>
+                    <button onclick="setQuickRange('last30')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded transition font-medium">Son 30 Gün</button>
                 </div>
             </div>
 
             <!-- Sonuç Kartları -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <span class="text-xs text-slate-400 font-medium">İş Günü</span>
-                    <h3 id="resWorkDays" class="text-2xl font-bold text-indigo-600 mt-1">0</h3>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Net İş Günü</span>
+                    <h3 id="resWorkDays" class="text-3xl font-bold text-slate-900 mt-2">0</h3>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <span class="text-xs text-slate-400 font-medium">Hafta Sonu</span>
-                    <h3 id="resWeekend" class="text-2xl font-bold text-slate-600 mt-1">0</h3>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Hafta Sonu</span>
+                    <h3 id="resWeekend" class="text-3xl font-bold text-slate-600 mt-2">0</h3>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <span class="text-xs text-slate-400 font-medium">Resmi / Dini Tatil</span>
-                    <h3 id="resHoliday" class="text-2xl font-bold text-rose-500 mt-1">0</h3>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Resmi / İdari Tatil</span>
+                    <h3 id="resHoliday" class="text-3xl font-bold text-amber-700 mt-2">0</h3>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <span class="text-xs text-slate-400 font-medium">Toplam Gün</span>
-                    <h3 id="resTotal" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Toplam Takvim Gün</span>
+                    <h3 id="resTotal" class="text-3xl font-bold text-slate-800 mt-2">0</h3>
                 </div>
             </div>
 
             <!-- Detaylı Döküm -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-700 mb-3 text-sm uppercase tracking-wider">Aralıktaki Tatiller ve Detaylar</h3>
-                <div id="holidayDetailsList" class="text-sm text-slate-600 space-y-1">
-                    <p class="text-slate-400 italic">Bu aralıkta tatil bulunmuyor.</p>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="font-semibold text-slate-800 mb-4 text-xs uppercase tracking-wider border-b border-slate-100 pb-2">Tarih Aralığına Denk Gelen Tatiller ve İzinler</h3>
+                <div id="holidayDetailsList" class="text-sm text-slate-600 space-y-2">
+                    <p class="text-slate-400 italic text-xs">Belirtilen aralıkta herhangi bir resmi veya özel tatil bulunmamaktadır.</p>
                 </div>
             </div>
         </div>
 
         <!-- BÖLÜM 2: Tarihe Gün Ekleme / Hedef Tarih Bulma -->
         <div id="section-add" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Başlangıç Tarihi</label>
-                    <input type="date" id="targetStartDate" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Başlangıç Tarihi</label>
+                    <input type="date" id="targetStartDate" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Eklenecek Miktar</label>
-                    <input type="number" id="addAmount" value="10" min="1" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Eklenecek Gün Süresi</label>
+                    <input type="number" id="addAmount" value="10" min="1" step="0.5" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Hesap Türü</label>
-                    <select id="addType" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-                        <option value="workday">Sadece İş Günü Ekle (Hafta sonu/Tatil hariç)</option>
-                        <option value="calendar">Takvim Günü Ekle (Normal Gün)</option>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Hesaplama Metodu</label>
+                    <select id="addType" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm bg-white">
+                        <option value="workday">Sadece İş Günlerini Ekle (Hafta sonu/Tatiller Hariç)</option>
+                        <option value="calendar">Takvim Günü Ekle (Kesintisiz)</option>
                     </select>
                 </div>
             </div>
 
             <!-- Hedef Sonuç Kartı -->
-            <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl text-center space-y-2">
-                <span class="text-xs text-indigo-500 font-bold uppercase tracking-wider">Hesaplanan Hedef Tarih</span>
-                <h2 id="targetResultDate" class="text-3xl font-extrabold text-indigo-700">-</h2>
-                <p id="targetResultDetail" class="text-sm text-indigo-600 font-medium"></p>
+            <div class="bg-slate-900 text-white p-8 rounded-xl shadow-sm text-center space-y-2">
+                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Öngörülen Bitiş / Hedef Tarih</span>
+                <h2 id="targetResultDate" class="text-4xl font-bold tracking-tight text-white">-</h2>
+                <p id="targetResultDetail" class="text-xs text-slate-300 font-medium pt-1"></p>
+            </div>
+        </div>
+
+        <!-- YENİ: Doğrudan Tarih Yazarak Özel İzin / Tatil Ekleme Bölümü -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-8">
+            <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider mb-1">Hızlı İzin / Özel Tatil Ekle</h3>
+            <p class="text-xs text-slate-500 mb-4">Takvimde gezinmeden, doğrudan belirli bir tarihe özel şirket izni veya idari tatil tanımlayabilirsiniz.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Tarih</label>
+                    <input type="date" id="quickHolidayDate" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Açıklama / İzin Adı</label>
+                    <input type="text" id="quickHolidayName" placeholder="Örn: Şirket İzni, İdari İzin" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Süre / Tür</label>
+                    <select id="quickHolidayWeight" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm bg-white">
+                        <option value="1.0">Tam Gün Tatil (1.0 Gün)</option>
+                        <option value="0.5">Yarım Gün Tatil (0.5 Gün)</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button onclick="addQuickHoliday()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium text-sm p-2.5 rounded-lg transition shadow-sm">
+                        İzni Tanımla
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Takvim & Tatil Yönetimi Bölümü -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mt-6">
-            <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
-                <h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">📅 Takvim & Özel Tatil Yönetimi</h3>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-6">
+            <div class="flex justify-between items-center mb-6 flex-wrap gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Takvim Görünümü</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Takvimdeki günlere tıklayarak da izin tanımlayabilir veya düzenleyebilirsiniz.</p>
+                </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="changeMonth(-1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold transition">◀ Önceki</button>
-                    <span id="calendarMonthLabel" class="font-bold text-sm w-36 text-center">Ekim 2026</span>
-                    <button onclick="changeMonth(1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold transition">Sonraki ▶</button>
+                    <button onclick="changeMonth(-1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded text-xs font-semibold text-slate-700 transition">Önceki Ay</button>
+                    <span id="calendarMonthLabel" class="font-bold text-sm w-36 text-center text-slate-800">Ekim 2026</span>
+                    <button onclick="changeMonth(1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded text-xs font-semibold text-slate-700 transition">Sonraki Ay</button>
                 </div>
             </div>
-            <p class="text-xs text-slate-500 mb-4">Bir güne tıklayarak o günü <strong>Özel Tatil / İzin</strong> yapabilir veya mevcut resmi tatili iptal edebilirsiniz.</p>
             
-            <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-slate-400 mb-2">
+            <div class="grid grid-cols-7 gap-1 text-center font-semibold text-xs text-slate-500 mb-2">
                 <div>Pzt</div><div>Sal</div><div>Çar</div><div>Per</div><div>Cum</div><div>Cmt</div><div>Paz</div>
             </div>
             <div id="calendarGrid" class="grid grid-cols-7 gap-1"></div>
         </div>
 
-        <!-- Paylaş / İşlem Butonları -->
-        <div class="flex flex-wrap gap-3 mt-6">
-            <button onclick="calculate()" class="flex-grow bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition">Hesaplamayı Güncelle</button>
-            <button onclick="shareLink()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition">🔗 Linki Paylaş</button>
-            <button onclick="resetData()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-4 rounded-xl transition">Sıfırla</button>
+        <!-- İşlem Butonları -->
+        <div class="flex flex-wrap gap-3 mt-8">
+            <button onclick="calculate()" class="flex-grow bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm py-3 px-6 rounded-lg shadow-sm transition">Raporu Güncelle</button>
+            <button onclick="shareLink()" class="bg-blue-700 hover:bg-blue-800 text-white font-medium text-sm py-3 px-6 rounded-lg shadow-sm transition">Bağlantıyı Paylaş</button>
+            <button onclick="resetData()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-3 px-4 rounded-lg transition">Sıfırla</button>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 mt-12">
-        İş Günü & Tatil Hesaplayıcı &bull; Esra Duygu Uğuz
+    <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-200 mt-12 bg-white">
+        İş Günü ve Tatil Yönetim Paneli &bull; Esra Duygu Uğuz
     </footer>
 
     <script>
@@ -148,6 +199,7 @@
             document.getElementById('startDate').value = today;
             document.getElementById('endDate').value = nextMonth;
             document.getElementById('targetStartDate').value = today;
+            document.getElementById('quickHolidayDate').value = today;
 
             loadFromUrl();
             calculate();
@@ -164,26 +216,27 @@
             if(tab === 'range') {
                 document.getElementById('section-range').classList.remove('hidden');
                 document.getElementById('section-add').classList.add('hidden');
-                document.getElementById('tab-range').className = "py-3 px-6 font-semibold border-b-2 border-indigo-600 text-indigo-600 focus:outline-none transition whitespace-nowrap";
-                document.getElementById('tab-add').className = "py-3 px-6 font-semibold text-slate-500 border-b-2 border-transparent hover:text-indigo-600 focus:outline-none transition whitespace-nowrap";
+                document.getElementById('tab-range').className = "py-3 px-6 font-medium text-sm border-b-2 border-slate-900 text-slate-900 focus:outline-none transition whitespace-nowrap";
+                document.getElementById('tab-add').className = "py-3 px-6 font-medium text-sm text-slate-500 border-b-2 border-transparent hover:text-slate-900 focus:outline-none transition whitespace-nowrap";
             } else {
                 document.getElementById('section-range').classList.add('hidden');
                 document.getElementById('section-add').classList.remove('hidden');
-                document.getElementById('tab-add').className = "py-3 px-6 font-semibold border-b-2 border-indigo-600 text-indigo-600 focus:outline-none transition whitespace-nowrap";
-                document.getElementById('tab-range').className = "py-3 px-6 font-semibold text-slate-500 border-b-2 border-transparent hover:text-indigo-600 focus:outline-none transition whitespace-nowrap";
+                document.getElementById('tab-add').className = "py-3 px-6 font-medium text-sm border-b-2 border-slate-900 text-slate-900 focus:outline-none transition whitespace-nowrap";
+                document.getElementById('tab-range').className = "py-3 px-6 font-medium text-sm text-slate-500 border-b-2 border-transparent hover:text-slate-900 focus:outline-none transition whitespace-nowrap";
                 calculateTargetDate();
             }
         }
 
         function getOfficialHolidays(year) {
             let holidays = {
-                [`${year}-01-01`]: "Yılbaşı",
-                [`${year}-04-23`]: "Ulusal Egemenlik ve Çocuk Bayramı",
-                [`${year}-05-01`]: "Emek ve Dayanışma Günü",
-                [`${year}-05-19`]: "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                [`${year}-07-15`]: "Demokrasi ve Milli Birlik Günü",
-                [`${year}-08-30`]: "Zafer Bayramı",
-                [`${year}-10-29`]: "Cumhuriyet Bayramı"
+                [`${year}-01-01`]: { name: "Yılbaşı", weight: 1.0 },
+                [`${year}-04-23`]: { name: "Ulusal Egemenlik ve Çocuk Bayramı", weight: 1.0 },
+                [`${year}-05-01`]: { name: "Emek ve Dayanışma Günü", weight: 1.0 },
+                [`${year}-05-19`]: { name: "Atatürk'ü Anma, Gençlik ve Spor Bayramı", weight: 1.0 },
+                [`${year}-07-15`]: { name: "Demokrasi ve Milli Birlik Günü", weight: 1.0 },
+                [`${year}-08-30`]: { name: "Zafer Bayramı", weight: 1.0 },
+                [`${year}-10-28`]: { name: "Cumhuriyet Bayramı Arifesi", weight: 0.5 },
+                [`${year}-10-29`]: { name: "Cumhuriyet Bayramı", weight: 1.0 }
             };
 
             const religiousHolidays = {
@@ -196,15 +249,15 @@
 
             if (religiousHolidays[year]) {
                 let r = religiousHolidays[year];
-                holidays[r.ramazanArife] = "Ramazan Bayramı Arifesi (Yarım Gün)";
-                holidays[r.ramazan1] = "Ramazan Bayramı 1. Gün";
-                holidays[r.ramazan2] = "Ramazan Bayramı 2. Gün";
-                holidays[r.ramazan3] = "Ramazan Bayramı 3. Gün";
-                holidays[r.kurbanArife] = "Kurban Bayramı Arifesi (Yarım Gün)";
-                holidays[r.kurban1] = "Kurban Bayramı 1. Gün";
-                holidays[r.kurban2] = "Kurban Bayramı 2. Gün";
-                holidays[r.kurban3] = "Kurban Bayramı 3. Gün";
-                holidays[r.kurban4] = "Kurban Bayramı 4. Gün";
+                holidays[r.ramazanArife] = { name: "Ramazan Bayramı Arifesi", weight: 0.5 };
+                holidays[r.ramazan1] = { name: "Ramazan Bayramı 1. Gün", weight: 1.0 };
+                holidays[r.ramazan2] = { name: "Ramazan Bayramı 2. Gün", weight: 1.0 };
+                holidays[r.ramazan3] = { name: "Ramazan Bayramı 3. Gün", weight: 1.0 };
+                holidays[r.kurbanArife] = { name: "Kurban Bayramı Arifesi", weight: 0.5 };
+                holidays[r.kurban1] = { name: "Kurban Bayramı 1. Gün", weight: 1.0 };
+                holidays[r.kurban2] = { name: "Kurban Bayramı 2. Gün", weight: 1.0 };
+                holidays[r.kurban3] = { name: "Kurban Bayramı 3. Gün", weight: 1.0 };
+                holidays[r.kurban4] = { name: "Kurban Bayramı 4. Gün", weight: 1.0 };
             }
 
             return holidays;
@@ -239,7 +292,7 @@
                 document.getElementById('resWeekend').innerText = "0";
                 document.getElementById('resHoliday').innerText = "0";
                 document.getElementById('resTotal').innerText = "0";
-                document.getElementById('holidayDetailsList').innerHTML = `<p class="text-rose-500 font-medium">Bitiş tarihi başlangıç tarihinden sonra olmalıdır!</p>`;
+                document.getElementById('holidayDetailsList').innerHTML = `<p class="text-rose-600 font-medium text-xs">Bitiş tarihi başlangıç tarihinden sonraki bir tarih olmalıdır.</p>`;
                 return;
             }
 
@@ -248,19 +301,21 @@
 
             let totalDays = 0;
             let weekendDays = 0;
-            let holidayDays = 0;
+            let holidayWeightTotal = 0;
             let workDays = 0;
             let holidayDetails = [];
 
             while (curr <= endDate) {
                 totalDays++;
                 let dateStr = curr.toISOString().split('T')[0];
-                let holidayName = isHoliday(dateStr);
+                let holidayObj = isHoliday(dateStr);
                 let weekend = isWeekend(curr);
 
-                if (holidayName) {
-                    holidayDays++;
-                    holidayDetails.push(`&bull; ${dateStr}: <strong>${holidayName}</strong>`);
+                if (holidayObj) {
+                    holidayWeightTotal += holidayObj.weight;
+                    workDays += (1 - holidayObj.weight);
+                    let labelWeight = holidayObj.weight === 0.5 ? " (Yarım Gün - 0.5)" : "";
+                    holidayDetails.push(`<div class="flex items-center gap-2 border-b border-slate-100 pb-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> <span>${dateStr}: <strong>${holidayObj.name}${labelWeight}</strong></span></div>`);
                 } else if (weekend) {
                     weekendDays++;
                 } else {
@@ -270,16 +325,16 @@
                 curr.setDate(curr.getDate() + 1);
             }
 
-            document.getElementById('resWorkDays').innerText = workDays;
+            document.getElementById('resWorkDays').innerText = workDays % 1 === 0 ? workDays : workDays.toFixed(1);
             document.getElementById('resWeekend').innerText = weekendDays;
-            document.getElementById('resHoliday').innerText = holidayDays;
+            document.getElementById('resHoliday').innerText = holidayWeightTotal % 1 === 0 ? holidayWeightTotal : holidayWeightTotal.toFixed(1);
             document.getElementById('resTotal').innerText = totalDays;
 
             let listDiv = document.getElementById('holidayDetailsList');
             if (holidayDetails.length > 0) {
-                listDiv.innerHTML = holidayDetails.join('<br>');
+                listDiv.innerHTML = holidayDetails.join('');
             } else {
-                listDiv.innerHTML = `<p class="text-slate-400 italic">Seçilen aralıkta tatil bulunmuyor.</p>`;
+                listDiv.innerHTML = `<p class="text-slate-400 italic text-xs">Belirtilen aralıkta herhangi bir resmi veya özel tatil bulunmamaktadır.</p>`;
             }
 
             calculateTargetDate();
@@ -288,32 +343,69 @@
 
         function calculateTargetDate() {
             let startInput = document.getElementById('targetStartDate').value;
-            let amount = parseInt(document.getElementById('addAmount').value) || 0;
+            let amount = parseFloat(document.getElementById('addAmount').value) || 0;
             let type = document.getElementById('addType').value;
 
             if (!startInput) return;
 
             let curr = new Date(startInput);
-            let addedCount = 0;
 
             if (type === 'calendar') {
-                curr.setDate(curr.getDate() + amount);
+                curr.setDate(curr.getDate() + Math.ceil(amount));
                 document.getElementById('targetResultDate').innerText = curr.toISOString().split('T')[0];
-                document.getElementById('targetResultDetail').innerText = `${amount} takvim günü sonrasıdır.`;
+                document.getElementById('targetResultDetail').innerText = `${amount} takvim günü sonrasına denk gelmektedir.`;
             } else {
+                let addedCount = 0;
                 while (addedCount < amount) {
                     curr.setDate(curr.getDate() + 1);
                     let dateStr = curr.toISOString().split('T')[0];
-                    let holiday = isHoliday(dateStr);
+                    let holidayObj = isHoliday(dateStr);
                     let weekend = isWeekend(curr);
 
-                    if (!holiday && !weekend) {
-                        addedCount++;
+                    if (!weekend) {
+                        if (holidayObj) {
+                            addedCount += (1 - holidayObj.weight);
+                        } else {
+                            addedCount += 1;
+                        }
                     }
                 }
                 document.getElementById('targetResultDate').innerText = curr.toISOString().split('T')[0];
-                document.getElementById('targetResultDetail').innerText = `${amount} iş günü sonrasına denk gelmektedir.`;
+                document.getElementById('targetResultDetail').innerText = `${amount} net iş günü eklenerek hesaplanmıştır.`;
             }
+        }
+
+        // YENİ: Hızlı İzin Ekleme Fonksiyonu
+        function addQuickHoliday() {
+            let dateVal = document.getElementById('quickHolidayDate').value;
+            let nameVal = document.getElementById('quickHolidayName').value.trim();
+            let weightVal = parseFloat(document.getElementById('quickHolidayWeight').value);
+
+            if (!dateVal) {
+                alert("Lütfen geçerli bir tarih seçin.");
+                return;
+            }
+
+            if (!nameVal) {
+                nameVal = weightVal === 0.5 ? "Özel İzin (Yarım Gün)" : "Özel İzin";
+            }
+
+            customHolidays[dateVal] = {
+                name: nameVal,
+                weight: weightVal
+            };
+
+            if (disabledHolidays[dateVal]) delete disabledHolidays[dateVal];
+
+            // Otomatik olarak eklenen tarihteki aya geçiş yapalım ki takvimde görülsün
+            let targetDate = new Date(dateVal);
+            currentYear = targetDate.getFullYear();
+            currentMonth = targetDate.getMonth();
+
+            document.getElementById('quickHolidayName').value = "";
+            calculate();
+            renderCalendar();
+            alert(`${dateVal} tarihi için "${nameVal}" izni başarıyla tanımlandı.`);
         }
 
         function renderCalendar() {
@@ -341,22 +433,22 @@
             for (let d = 1; d <= lastDay.getDate(); d++) {
                 let dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 let cell = document.createElement('div');
-                cell.className = "h-10 flex flex-col items-center justify-center rounded-xl text-xs font-semibold cursor-pointer border border-slate-100 transition relative";
+                cell.className = "h-10 flex flex-col items-center justify-center rounded-lg text-xs font-semibold cursor-pointer border border-slate-200 transition relative";
                 cell.innerText = d;
 
-                let holidayName = isHoliday(dateStr);
+                let holidayObj = isHoliday(dateStr);
                 let currDateObj = new Date(year, month, d);
 
                 if (customHolidays[dateStr]) {
-                    cell.classList.add('custom-holiday-cell');
-                    cell.title = "Özel Tatil: " + customHolidays[dateStr];
+                    cell.classList.add(customHolidays[dateStr].weight === 0.5 ? 'half-holiday-cell' : 'custom-holiday-cell');
+                    cell.title = "Özel İzin: " + customHolidays[dateStr].name + (customHolidays[dateStr].weight === 0.5 ? " (0.5 Gün)" : "");
                 } else if (official[dateStr] && !disabledHolidays[dateStr]) {
-                    cell.classList.add('holiday-cell');
-                    cell.title = "Resmi Tatil: " + official[dateStr];
+                    cell.classList.add(official[dateStr].weight === 0.5 ? 'half-holiday-cell' : 'holiday-cell');
+                    cell.title = "Resmi Tatil: " + official[dateStr].name + (official[dateStr].weight === 0.5 ? " (0.5 Gün)" : "");
                 } else if (isWeekend(currDateObj)) {
                     cell.classList.add('weekend-cell');
                 } else {
-                    cell.classList.add('bg-white', 'hover:bg-indigo-50');
+                    cell.classList.add('bg-white', 'hover:bg-slate-100');
                 }
 
                 cell.onclick = () => toggleHolidayPrompt(dateStr);
@@ -377,16 +469,22 @@
         }
 
         function toggleHolidayPrompt(dateStr) {
-            let currentName = customHolidays[dateStr] || getOfficialHolidays(parseInt(dateStr.split('-')[0]))[dateStr] || "";
-            let action = prompt(`Tarih: ${dateStr}\nBu gün için işlem seçin:\n1. Özel tatil adı girin (Örn: Şirket İzni)\n2. Resmi tatili iptal etmek için boş bırakıp 'Sil' yazın.`, currentName);
+            let year = parseInt(dateStr.split('-')[0]);
+            let official = getOfficialHolidays(year)[dateStr];
+            let currentObj = customHolidays[dateStr] || official || { name: "", weight: 1.0 };
+            
+            let action = prompt(`Tarih: ${dateStr}\nİzin / Tatil Açıklaması Girin (Mevcut tanımı kaldırmak için 'sil' yazın):`, currentObj.name);
 
             if (action !== null) {
                 if (action.trim() === "" || action.toLowerCase() === 'sil') {
                     if (customHolidays[dateStr]) delete customHolidays[dateStr];
-                    let year = parseInt(dateStr.split('-')[0]);
-                    if (getOfficialHolidays(year)[dateStr]) disabledHolidays[dateStr] = true;
+                    if (official) disabledHolidays[dateStr] = true;
                 } else {
-                    customHolidays[dateStr] = action;
+                    let isHalf = confirm("Bu izin Yarım Gün (0.5 gün) olarak mı hesaplansın?\n[Tamam = Yarım Gün (0.5), İptal = Tam Gün (1.0)]");
+                    customHolidays[dateStr] = {
+                        name: action,
+                        weight: isHalf ? 0.5 : 1.0
+                    };
                     if (disabledHolidays[dateStr]) delete disabledHolidays[dateStr];
                 }
                 calculate();
@@ -429,7 +527,7 @@
             });
             let shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
             navigator.clipboard.writeText(shareUrl).then(() => {
-                alert("Özelleştirilmiş hesaplama bağlantısı panoya kopyalandı! Bu bağlantıyı dilediğiniz kişiyle paylaşabilirsiniz.");
+                alert("Rapor bağlantısı panoya kopyalandı. Bu bağlantıyı ilgililerle paylaşabilirsiniz.");
             });
         }
 
