@@ -1,0 +1,10 @@
+{
+  "name": "Kurumsal İş Günü ve İzin Yönetim Paneli",
+  "short_name": "İşGünü Paneli",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "Mevzuat uyumlu iş günü, resmi tatil ve yarım gün izin hesaplama aracı.",
+  "icons": []
+}
