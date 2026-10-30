@@ -6,5 +6,12 @@
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "description": "Mevzuat uyumlu iş günü, resmi tatil ve yarım gün izin hesaplama aracı.",
-  "icons": []
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3652/3652191.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
