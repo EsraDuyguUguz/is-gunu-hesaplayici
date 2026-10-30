@@ -96,23 +96,31 @@
             </div>
         </div>
 
-        <!-- BÖLÜM 2: Tarihe Gün Ekleme / Hedef Tarih Bulma -->
+        <!-- BÖLÜM 2: Hedef Tarih Projeksiyonu -->
         <div id="section-add" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Başlangıç Tarihi</label>
-                    <input type="date" id="targetStartDate" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Başlangıç Tarihi</label>
+                        <input type="date" id="targetStartDate" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Eklenecek Gün Süresi</label>
+                        <input type="number" id="addAmount" value="10" min="1" step="0.5" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Hesaplama Metodu</label>
+                        <select id="addType" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm bg-white">
+                            <option value="workday">Sadece İş Günlerini Ekle (Hafta sonu/Tatiller Hariç)</option>
+                            <option value="calendar">Takvim Günü Ekle (Kesintisiz)</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Eklenecek Gün Süresi</label>
-                    <input type="number" id="addAmount" value="10" min="1" step="0.5" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Hesaplama Metodu</label>
-                    <select id="addType" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm bg-white">
-                        <option value="workday">Sadece İş Günlerini Ekle (Hafta sonu/Tatiller Hariç)</option>
-                        <option value="calendar">Takvim Günü Ekle (Kesintisiz)</option>
-                    </select>
+
+                <div class="pt-2 flex justify-end">
+                    <button onclick="calculateTargetDate()" class="bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm py-2.5 px-6 rounded-lg transition shadow-sm">
+                        Hesapla
+                    </button>
                 </div>
             </div>
 
@@ -120,11 +128,11 @@
             <div class="bg-slate-900 text-white p-8 rounded-xl shadow-sm text-center space-y-2">
                 <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Öngörülen Bitiş / Hedef Tarih</span>
                 <h2 id="targetResultDate" class="text-4xl font-bold tracking-tight text-white">-</h2>
-                <p id="targetResultDetail" class="text-xs text-slate-300 font-medium pt-1"></p>
+                <p id="targetResultDetail" class="text-xs text-slate-300 font-medium pt-1">Hesaplamak için yukarıdaki butona tıklayın.</p>
             </div>
         </div>
 
-        <!-- YENİ: Doğrudan Tarih Yazarak Özel İzin / Tatil Ekleme Bölümü -->
+        <!-- Doğrudan Tarih Yazarak Özel İzin / Tatil Ekleme Bölümü -->
         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-8">
             <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider mb-1">Hızlı İzin / Özel Tatil Ekle</h3>
             <p class="text-xs text-slate-500 mb-4">Takvimde gezinmeden, doğrudan belirli bir tarihe özel şirket izni veya idari tatil tanımlayabilirsiniz.</p>
@@ -207,9 +215,6 @@
 
             document.getElementById('startDate').addEventListener('change', calculate);
             document.getElementById('endDate').addEventListener('change', calculate);
-            document.getElementById('targetStartDate').addEventListener('input', calculateTargetDate);
-            document.getElementById('addAmount').addEventListener('input', calculateTargetDate);
-            document.getElementById('addType').addEventListener('change', calculateTargetDate);
         };
 
         function switchTab(tab) {
@@ -223,8 +228,15 @@
                 document.getElementById('section-add').classList.remove('hidden');
                 document.getElementById('tab-add').className = "py-3 px-6 font-medium text-sm border-b-2 border-slate-900 text-slate-900 focus:outline-none transition whitespace-nowrap";
                 document.getElementById('tab-range').className = "py-3 px-6 font-medium text-sm text-slate-500 border-b-2 border-transparent hover:text-slate-900 focus:outline-none transition whitespace-nowrap";
-                calculateTargetDate();
             }
+        }
+
+        // Tarih formatını YYYY-MM-DD formatından GG.AA.YYYY formatına çevirici
+        function formatDateTR(dateStr) {
+            if (!dateStr) return "-";
+            let parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            return `${parts[2]}.${parts[1]}.${parts[0]}`;
         }
 
         function getOfficialHolidays(year) {
@@ -315,7 +327,7 @@
                     holidayWeightTotal += holidayObj.weight;
                     workDays += (1 - holidayObj.weight);
                     let labelWeight = holidayObj.weight === 0.5 ? " (Yarım Gün - 0.5)" : "";
-                    holidayDetails.push(`<div class="flex items-center gap-2 border-b border-slate-100 pb-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> <span>${dateStr}: <strong>${holidayObj.name}${labelWeight}</strong></span></div>`);
+                    holidayDetails.push(`<div class="flex items-center gap-2 border-b border-slate-100 pb-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> <span>${formatDateTR(dateStr)}: <strong>${holidayObj.name}${labelWeight}</strong></span></div>`);
                 } else if (weekend) {
                     weekendDays++;
                 } else {
@@ -337,7 +349,6 @@
                 listDiv.innerHTML = `<p class="text-slate-400 italic text-xs">Belirtilen aralıkta herhangi bir resmi veya özel tatil bulunmamaktadır.</p>`;
             }
 
-            calculateTargetDate();
             renderCalendar();
         }
 
@@ -346,14 +357,18 @@
             let amount = parseFloat(document.getElementById('addAmount').value) || 0;
             let type = document.getElementById('addType').value;
 
-            if (!startInput) return;
+            if (!startInput) {
+                alert("Lütfen başlangıç tarihi seçin.");
+                return;
+            }
 
             let curr = new Date(startInput);
 
             if (type === 'calendar') {
                 curr.setDate(curr.getDate() + Math.ceil(amount));
-                document.getElementById('targetResultDate').innerText = curr.toISOString().split('T')[0];
-                document.getElementById('targetResultDetail').innerText = `${amount} takvim günü sonrasına denk gelmektedir.`;
+                let isoDate = curr.toISOString().split('T')[0];
+                document.getElementById('targetResultDate').innerText = formatDateTR(isoDate);
+                document.getElementById('targetResultDetail').innerText = `${amount} takvim günü sonrasına (${formatDateTR(isoDate)}) denk gelmektedir.`;
             } else {
                 let addedCount = 0;
                 while (addedCount < amount) {
@@ -370,12 +385,12 @@
                         }
                     }
                 }
-                document.getElementById('targetResultDate').innerText = curr.toISOString().split('T')[0];
+                let isoDate = curr.toISOString().split('T')[0];
+                document.getElementById('targetResultDate').innerText = formatDateTR(isoDate);
                 document.getElementById('targetResultDetail').innerText = `${amount} net iş günü eklenerek hesaplanmıştır.`;
             }
         }
 
-        // YENİ: Hızlı İzin Ekleme Fonksiyonu
         function addQuickHoliday() {
             let dateVal = document.getElementById('quickHolidayDate').value;
             let nameVal = document.getElementById('quickHolidayName').value.trim();
@@ -397,7 +412,6 @@
 
             if (disabledHolidays[dateVal]) delete disabledHolidays[dateVal];
 
-            // Otomatik olarak eklenen tarihteki aya geçiş yapalım ki takvimde görülsün
             let targetDate = new Date(dateVal);
             currentYear = targetDate.getFullYear();
             currentMonth = targetDate.getMonth();
@@ -405,7 +419,7 @@
             document.getElementById('quickHolidayName').value = "";
             calculate();
             renderCalendar();
-            alert(`${dateVal} tarihi için "${nameVal}" izni başarıyla tanımlandı.`);
+            alert(`${formatDateTR(dateVal)} tarihi için "${nameVal}" izni başarıyla tanımlandı.`);
         }
 
         function renderCalendar() {
@@ -473,7 +487,7 @@
             let official = getOfficialHolidays(year)[dateStr];
             let currentObj = customHolidays[dateStr] || official || { name: "", weight: 1.0 };
             
-            let action = prompt(`Tarih: ${dateStr}\nİzin / Tatil Açıklaması Girin (Mevcut tanımı kaldırmak için 'sil' yazın):`, currentObj.name);
+            let action = prompt(`Tarih: ${formatDateTR(dateStr)}\nİzin / Tatil Açıklaması Girin (Mevcut tanımı kaldırmak için 'sil' yazın):`, currentObj.name);
 
             if (action !== null) {
                 if (action.trim() === "" || action.toLowerCase() === 'sil') {
