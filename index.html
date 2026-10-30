@@ -6,6 +6,8 @@
     <title>Kurumsal İş Günü ve İzin Yönetim Paneli</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -24,8 +26,14 @@
                 <h1 class="text-2xl font-bold tracking-tight text-slate-100">İş Günü ve İzin Analiz Platformu</h1>
                 <p class="text-slate-400 mt-1 text-xs md:text-sm">Resmi tatiller, yarım gün izinler ve iş günü projeksiyonu yönetim paneli</p>
             </div>
-            <div class="text-xs text-slate-400 bg-slate-800/80 px-3 py-1.5 rounded-md border border-slate-700">
-                Mevzuat Uyumlu Hesaplama
+            <div class="flex items-center gap-3">
+                <!-- PWA İndir Butonu (Başlangıçta gizli olabilir, tarayıcı destekleyince aktifleşir) -->
+                <button id="installBtn" onclick="installPWA()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <span>📱 Uygulamayı İndir</span>
+                </button>
+                <div class="text-xs text-slate-400 bg-slate-800/80 px-3 py-2 rounded-md border border-slate-700">
+                    Mevzuat Uyumlu
+                </div>
             </div>
         </div>
     </header>
@@ -119,7 +127,7 @@
 
                 <div class="pt-2 flex justify-end">
                     <button onclick="calculateTargetDate()" class="bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm py-2.5 px-6 rounded-lg transition shadow-sm">
-                        Hesapla
+                        Projeksiyonu Hesapla
                     </button>
                 </div>
             </div>
@@ -191,7 +199,7 @@
 
     <!-- Footer -->
     <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-200 mt-12 bg-white">
-        İş Günü ve Tatil Yönetim Paneli &bull; Esra Duygu Uğuz
+        İş Günü ve İzin Yönetim Paneli &bull; Esra Duygu Uğuz
     </footer>
 
     <script>
@@ -199,6 +207,7 @@
         let currentMonth = new Date().getMonth();
         let customHolidays = {}; 
         let disabledHolidays = {}; 
+        let deferredPrompt = null;
 
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
@@ -215,7 +224,31 @@
 
             document.getElementById('startDate').addEventListener('change', calculate);
             document.getElementById('endDate').addEventListener('change', calculate);
+
+            // PWA Servis Kaydı
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW kayıt hatası:', err));
+            }
         };
+
+        // PWA Kurulum Butonu Dinleyicisi
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').classList.remove('hidden');
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('installBtn').classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
 
         function switchTab(tab) {
             if(tab === 'range') {
@@ -231,7 +264,6 @@
             }
         }
 
-        // Tarih formatını YYYY-MM-DD formatından GG.AA.YYYY formatına çevirici
         function formatDateTR(dateStr) {
             if (!dateStr) return "-";
             let parts = dateStr.split('-');
